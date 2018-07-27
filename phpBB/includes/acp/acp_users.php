@@ -76,6 +76,102 @@ class acp_users
 
 			return;
 		}
+		else if ($action == 'ipinfo')
+		{
+			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+
+			$this->page_title = 'IP_LOCATION';
+			$this->tpl_name = 'simple_body';
+
+			$user_ip = phpbb_ip_normalise(request_var('user_ip', ''));
+			$domain = gethostbyaddr($user_ip);
+			$ipinfo = user_ipinfo($user_ip);
+
+			$template->assign_vars(array(
+				'MESSAGE_TITLE'		=> sprintf($user->lang['IP_LOCATION_FOR'], $domain),
+				'MESSAGE_TEXT'		=> nl2br($ipinfo))
+			);
+
+			return;
+		}
+		elseif ($action == 'ip_reuse')
+		{
+			$this->page_title = 'IP_REUSE';
+			$this->tpl_name = 'simple_body';
+
+			// Get other users who've registered from this IP
+			$user_ip = phpbb_ip_normalise(request_var('user_ip', ''));
+
+			$sql = 'SELECT user_id, username, user_regdate
+				FROM ' . USERS_TABLE . "
+				WHERE user_ip = '". $db->sql_escape($user_ip) ."'";
+
+			$result = $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				// Fill the user select list with users who have posted under this IP
+				if ((int)$row['user_id'] != $user_id)
+				{
+					$users_ary2[$row['user_id']] = $row;
+				}
+			}
+			$db->sql_freeresult($result);
+
+			if (sizeof($users_ary2))
+			{
+				$msg_txt = "Other users who have registered from this ip address: \n\n";
+				foreach ($users_ary2 as $user_row)				
+				{
+					$msg_txt = $msg_txt . utf8_clean_string($user_row['username']) . '; registered at ' . $user->format_date($user_row['user_regdate']) . "\n";
+				}
+			}
+			else
+			{
+				$msg_txt = 'No other users have registered from this ip address: ';
+			}
+
+			// Get any other users who have posted from this IP
+			$sql = 'SELECT poster_id, username, last_post
+				FROM ( SELECT poster_id, MAX(post_time) as last_post
+				FROM ' . POSTS_TABLE . "
+				WHERE poster_ip = '" . $db->sql_escape($user_ip) . "'
+				GROUP BY poster_id
+				ORDER BY last_post DESC
+				)AS matching_posts
+				LEFT JOIN " . USERS_TABLE . "
+				ON poster_id = user_id";
+
+			$result = $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				// Fill the user select list with users who have posted under this IP
+				if ($row['poster_id'] != $user_id)
+				{
+					$users_ary[$row['poster_id']] = $row;
+				}
+			}
+			$db->sql_freeresult($result);
+
+			if (sizeof($users_ary))
+			{
+				$msg_txt = $msg_txt . "\n\n\nOther users who have posted from this ip address: \n\n";
+				foreach ($users_ary as $user_row)				{
+					$msg_txt = $msg_txt . utf8_clean_string($user_row['username']) . '; last posted at ' . $user->format_date($user_row['last_post']) . "\n";
+				}
+			}
+			else
+			{
+				$msg_txt = $msg_txt . "\n\n\nNo other users have posted from this ip address: ";
+			}
+
+			$template->assign_vars(array(
+				'MESSAGE_TITLE'		=> sprintf($user->lang['IP_REUSE_FOR'], $domain),
+				'MESSAGE_TEXT'		=> nl2br($msg_txt))
+			);
+			return;
+		}
 
 		// Show user selection mask
 		if (!$username && !$user_id)
@@ -1143,6 +1239,8 @@ class acp_users
 
 					'U_SHOW_IP'		=> $this->u_action . "&amp;u=$user_id&amp;ip=" . (($ip == 'ip') ? 'hostname' : 'ip'),
 					'U_WHOIS'		=> $this->u_action . "&amp;action=whois&amp;user_ip={$user_row['user_ip']}",
+					'U_IPINFO'		=> $this->u_action . "&amp;action=ipinfo&amp;user_ip={$user_row['user_ip']}",
+					'U_IP_REUSE'	=> $this->u_action . "&amp;action=ip_reuse&amp;user_ip={$user_row['user_ip']}&amp;u={$user_row['user_id']}",
 					'U_MCP_QUEUE'	=> ($auth->acl_getf_global('m_approve')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue', true, $user->session_id) : '',
 					'U_SEARCH_USER'	=> ($config['load_search'] && $auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx", "author_id={$user_row['user_id']}&amp;sr=posts") : '',
 

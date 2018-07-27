@@ -25,7 +25,8 @@ class apcu extends \phpbb\cache\driver\memory
 	*/
 	function purge()
 	{
-		apcu_clear_cache();
+		/*apcu_clear_cache();*/
+        apcu_delete(new \APCUIterator('#^' . $this->key_prefix . '#'));
 
 		parent::purge();
 	}

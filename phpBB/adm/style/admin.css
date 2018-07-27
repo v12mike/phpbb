@@ -1781,7 +1781,7 @@ li.pagination ul {
 
 /* Action Highlighting
 ---------------------------------------- */
-.successbox, .errorbox, .warningbox {
+.successbox, .errorbox, .warningbox, .infobox {
 	padding: 8px;
 	margin: 10px 0;
 	color: #FFFFFF;
@@ -1809,27 +1809,33 @@ li.pagination ul {
 	background-color: #fca600;
 }
 
-.successbox h3, .errorbox h3 {
+.infobox {
+	background-color: #888888;
+	text-align: left;
+}
+
+.successbox h3, .errorbox h3, .infobox h3 {
 	color: #FFFFFF;
 	margin: 0 0 0.5em;
 	font-size: 1.10em;
 	font-family: "Lucida Grande",Verdana,Helvetica,Arial,sans-serif;
 }
 
-.successbox p, .errorbox p {
+.successbox p, .errorbox p, .infobo p {
 	color: #FFFFFF;
 	font-size: 0.85em;
 	margin-bottom: 0;
 }
 
 .errorbox a:link, .errorbox a:active, .errorbox a:visited,
-.successbox a:link, .successbox a:active, .successbox a:visited {
+.successbox a:link, .successbox a:active, .successbox a:visited,
+.infobox a:link, .infobox a:active, .infobox a:visited {
 	color: #DBD7D1;
 	text-decoration: underline;
 	font-weight: bold;
 }
 
-.errorbox a:hover, .successbox a:hover {
+.errorbox a:hover, .successbox a:hover, .infobox a:hover {
 	color: #FFFFFF;
 	text-decoration: none;
 	font-weight: bold;

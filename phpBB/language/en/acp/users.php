@@ -74,6 +74,10 @@ $lang = array_merge($lang, array(
 	'GROUP_PROMOTE'					=> 'Promote to group leader',
 
 	'IP_WHOIS_FOR'			=> 'IP whois for %s',
+	'IP_REUSE'				=> 'IP address re-use',
+	'IP_REUSE_FOR'			=> 'IP address re-use for %s',
+	'IP_LOCATION'			=> 'Geo-location',
+	'IP_LOCATION_FOR'		=> 'IP address Geo-location for %s',
 
 	'LAST_ACTIVE'			=> 'Last active',
 

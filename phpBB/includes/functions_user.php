@@ -1496,6 +1496,37 @@ function user_ipwhois($ip)
 }
 
 /**
+* Internet Protocol Address lookup using http://ipinf.io 
+*
+* @param string $ip		Ip address, either IPv4 or IPv6.
+*
+* @return string		.
+*/
+function user_ipinfo($ip)
+{
+	if (empty($ip))
+	{
+		return '';
+	}
+
+	$details = array();
+    $json = file_get_contents("http://ipinfo.io/{$ip}");
+    $details = json_decode($json, true);
+
+	$string = "<b>Geolocation using http://ipinfo.io/{$ip} </b><br><br><pre>";
+	foreach($details as $item => $value)
+	{
+		$item = htmlspecialchars($item);
+		$value = htmlspecialchars($value);
+
+		$string .= str_pad("{$item}: ", 15, '.') . " <b>{$value}</b><br />";
+	}
+	$string .= '</pre>';
+	// Magic URL ;)
+	return trim(make_clickable($string, false, ''));
+}
+
+/**
 * Data validation ... used primarily but not exclusively by ucp modules
 *
 * "Master" function for validating a range of data types
