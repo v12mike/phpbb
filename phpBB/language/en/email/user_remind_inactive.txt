@@ -8,4 +8,4 @@ This notification is a reminder that your account at "{SITENAME}", created on {R
 
 Thank you for registering at "{SITENAME}", we look forward to your participation.
 
-{EMAIL_SIG}
+  Note that we may delete this account if it is not activated within 7 days.{EMAIL_SIG}

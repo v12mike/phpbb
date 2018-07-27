@@ -144,6 +144,7 @@ class acp_users
 
 			$result = $db->sql_query($sql);
 
+			$users_ary = array();
 			while ($row = $db->sql_fetchrow($result))
 			{
 				// Fill the user select list with users who have posted under this IP

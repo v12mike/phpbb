@@ -1435,7 +1435,7 @@ function user_ipwhois($ip)
 	else if (preg_match(get_preg_expression('ipv6'), $ip))
 	{
 		// IPv6 address
-		$whois_host = 'whois.sixxs.net.';
+		$whois_host = 'whois.arin.net.';
 	}
 	else
 	{
